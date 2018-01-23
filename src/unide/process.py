@@ -281,14 +281,18 @@ class Measurement(Object):
     series = InstanceOf("series", Series, default=Series)
     limits = InstanceOf("limits", Limits, default=Limits)
 
+    # pylint: disable=too-many-arguments
     def __init__(self,
                  ts=None,
                  phase=None,
                  name=None,
                  result=None,
                  code=None,
-                 *dimensions):
-        # pylint: disable=too-many-arguments
+                 dimensions=None):
+
+        if dimensions is None:
+            dimensions = []
+
         self.ts = ts
         self.phase = phase
         self.name = name

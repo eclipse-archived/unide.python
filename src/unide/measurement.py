@@ -181,9 +181,13 @@ class Measurement(Object):
     series = InstanceOf("series", Series, default=Series)
     limits = InstanceOf("limits", Limits, default=Limits)
 
-    def __init__(self, ts=None, result=None, code=None, *dimensions):
+    def __init__(self, ts=None, result=None, code=None, dimensions=None):
+        if dimensions is None:
+            dimensions = []
+
         if ts is None:
             ts = local_now()
+
         self.ts = ts
         self.result = result
         self.code = code
@@ -283,8 +287,9 @@ def device_measurement(device,
     """
     if ts is None:
         ts = local_now()
+
     payload = MeasurementPayload(device=device, part=part)
-    m = Measurement(ts, result, code, *list(kwargs.keys()))
+    m = Measurement(ts, result, code, list(kwargs))
     payload.measurements.append(m)
     m.add_sample(ts, **kwargs)
     return dumps(payload)

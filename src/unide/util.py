@@ -72,7 +72,10 @@ def dumps(data, **kwargs):
     def _encoder(value):
         if isinstance(value, datetime.datetime):
             return value.isoformat()
+
         if hasattr(value, "_data"):
             return value._data
+
+        raise TypeError('Could not encode %r' % value)
 
     return json.dumps(data, default=_encoder, **kwargs)

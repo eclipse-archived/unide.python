@@ -217,11 +217,15 @@ class Property(object):
                 errors.append("%s may not be 'null'" % fieldname)
             return True
 
+        return False
+
     def _check_type(self, fieldname, obj, value, errors):
         if self._types and not isinstance(value, self._types):
             errors.append("%r is not an appropriate value "
                           "for %s (wrong type)" % (value, fieldname))
             return True
+
+        return False
 
     def _check_length(self, fieldname, obj, value, errors):
         if self._length is not None:
@@ -230,6 +234,8 @@ class Property(object):
                                                                 self._length))
             return True
 
+        return False
+
     def _check_one_of(self, fieldname, obj, value, errors):
         if self._oneof:
             if value not in self._oneof:
@@ -237,11 +243,15 @@ class Property(object):
                               (value, ", ".join(str(x) for x in self._oneof)))
             return True
 
+        return False
+
     def _check_problems(self, fieldname, obj, value, errors):
         # pylint: disable=no-self-use
         if hasattr(value, "problems"):
             value.problems(errors)
             return True
+
+        return False
 
     def check(self, obj, value, errors):
         """Check if `value` is valid this property in the entity `obj`. Append
