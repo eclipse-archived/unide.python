@@ -1,0 +1,4 @@
+# This are additional dependencies for the sample programs.
+paho-mqtt
+requests
+
