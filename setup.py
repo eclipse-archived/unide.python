@@ -28,7 +28,7 @@ setup(
     long_description=open("README.rst").read(),
     author="Contact Software",
     author_email="unide@contact-software.com",
-    url="https://github.com/cslab/unide",
+    url="https://github.com/eclipse/unide.python",
     keywords='PPMP IoT Unide Eclipse',
     classifiers=[
         'Development Status :: 4 - Beta',

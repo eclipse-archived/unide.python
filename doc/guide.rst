@@ -179,7 +179,7 @@ exception is raised::
   >>> msg = loads(open("tests/invalid.json").read(), validate=True)
   Traceback (most recent call last):
     File "<stdin>", line 1, in <module>
-    File "/Users/frank/Projects/unide/cslab/unide.python/src/unide/util.py", line 51, in loads
+    File "/Users/frank/Projects/unide/eclipse/unide.python/src/unide/util.py", line 51, in loads
       raise ValidationError(errors)
     unide.util.ValidationError: 'xdevice' is not a valid key for 'MessagePayload' objects
 

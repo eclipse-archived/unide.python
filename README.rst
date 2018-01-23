@@ -46,7 +46,7 @@ a matter of just a few lines::
   >>> import paho.mqtt.client as mqtt
   >>> client = mqtt.Client()
   >>> client.connect("localhost", 1883, 60)
-  >>> device = unide.Device("Devive-001")
+  >>> device = unide.Device("Device-001")
   >>> measurement = device.measurement(temperature=36.7)
   >>> client.publish(topic="sample", measurement)
 
