@@ -1,0 +1,15 @@
+*~
+*.bak
+.python-version
+*.pyc
+*.egg-info/
+.coverage
+.tox/
+.idea
+.cache
+.eggs/
+build/
+dist/
+cover/
+env/
+doc/build/

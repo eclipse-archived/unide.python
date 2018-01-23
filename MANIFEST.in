@@ -1,0 +1,11 @@
+include *.txt
+include Makefile
+include CHANGES
+include VERSION
+include tox.ini
+recursive-include doc *.bat
+recursive-include doc *.py
+recursive-include doc *.rst
+recursive-include doc Makefile
+recursive-include src *.py
+recursive-include tests *.py
