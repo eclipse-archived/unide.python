@@ -42,13 +42,14 @@ applications. Generating a simple payload and sending it over MQTT
 using `Eclipse Paho <https://github.com/eclipse/paho.mqtt.python>`_ is
 a matter of just a few lines::
 
-  >>> import unide
-  >>> import paho.mqtt.client as mqtt
-  >>> client = mqtt.Client()
-  >>> client.connect("localhost", 1883, 60)
-  >>> device = unide.Device("Device-001")
-  >>> measurement = device.measurement(temperature=36.7)
-  >>> client.publish(topic="sample", measurement)
+  import unide
+  import paho.mqtt.client as mqtt
+
+  client = mqtt.Client()
+  client.connect("localhost", 1883, 60)
+  device = unide.Device("Device-001")
+  measurement = device.measurement(temperature=36.7)
+  client.publish(topic="sample", measurement)
 
 Installation
 ============
