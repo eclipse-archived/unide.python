@@ -16,7 +16,7 @@ information and measurement data for each phase of the process."""
 
 from .util import payload_wrapper, local_now
 from .schema import (String, Object, Float, Datetime, InstanceOf, Map, ListOf,
-                     HasDimensions, Property)
+                     HasDimensions, Property, NumberMap)
 from .common import Device, Result, Code
 
 
@@ -125,15 +125,8 @@ class Process(Object):
 class SpecialValue(Object):
     """One of the `SpecialValues`."""
     time = Float("time")
-    value = Float("value", null=False)
-
-
-class SpecialValues(HasDimensions):
-    """Provides information about special or interesting values during the
-    process phase. There is an option to set a time offset value related
-    to the start time of the process phase. By setting this it is possible
-    to using these value analog to one measurement value."""
-    __dimtype__ = SpecialValue
+    name = String("name")
+    value = NumberMap('value')
 
 
 class Series(HasDimensions):
@@ -216,7 +209,7 @@ class Limits(HasDimensions):
     `add_dimension()`. Declared dimensions are subsequently available
     as named attributes of the `Limits` object.
 
-    >>> from pyppmp.measurement import Limits
+    >>> from unide.measurement import Limits
     >>> limits = Limits("temperature")
     >>> limits.temperature.upperError = 59.0
     >>> limits.temperature.lowerError = 0.0
@@ -276,8 +269,7 @@ class Measurement(Object):
     name = String("name", 256)
     result = Result()
     code = Code()
-    specialValues = InstanceOf(
-        "specialValues", SpecialValues, default=SpecialValues)
+    specialValues = ListOf("specialValues", SpecialValue)
     series = InstanceOf("series", Series, default=Series)
     limits = InstanceOf("limits", Limits, default=Limits)
 

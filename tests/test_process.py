@@ -15,6 +15,8 @@ from unide.process import (ProcessPayload, Part, Process, Program,
                            Measurement, SpecialValue)
 from unide.common import Device
 
+import schemata
+
 
 def test_process():
     Process()
@@ -63,12 +65,8 @@ def test_build_sample():
     m.limits.temperature.lowerError = 44
     m.limits.temperature.upperWarn = 2222
     m.limits.temperature.lowerWarn = 46
-    m.specialValues.add_dimension("pressure")
-    m.specialValues.add_dimension("force")
-    m.specialValues.pressure.time = 24
-    m.specialValues.pressure.value = 44.2432
-    m.specialValues.force.time = 24
-    m.specialValues.force.value = 24
+
+    m.specialValues.append(SpecialValue(name='turning point', value={"pressure": 24, "force": 50}))
     m.series.add_dimension("time")
     m.series.add_dimension("force")
     m.series.add_dimension("pressure")
@@ -91,11 +89,7 @@ def test_build_sample():
     m.limits.pressure.upperError = [54, 48, 46]
     m.limits.pressure.lowerError = [50, 44, 42]
 
-    m.specialValues.add_dimension("pressure")
-    m.specialValues.pressure.value = 24
-
-    sv_force = SpecialValue(value=50)
-    m.specialValues["force"] = sv_force
+    m.specialValues.append(SpecialValue(name='some special value', value={'force': 50, 'pressure': 24}))
 
     m.series.add_dimension("time")
     m.series.add_dimension("force")
@@ -110,6 +104,7 @@ def test_build_sample():
     assert len(list(m.samples())) == 3
 
     assert not payload.problems()
+    schemata.validate_process(payload)
 
     payload.device._data["murx"] = 9
     errors = payload.problems()

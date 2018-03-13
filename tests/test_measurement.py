@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 # -*- Python -*-
 #
 # Copyright (c) 2017 Contact Software.
@@ -10,16 +11,18 @@
 # The Eclipse Public License is available at
 #     http://www.eclipse.org/legal/epl-v10.html
 
+
 import datetime
 import dateutil.tz
+from pytest import raises
+import time
 
 from unide.util import loads, dumps, local_now
 from unide.common import Device
 from unide.measurement import (Measurement, MeasurementPayload, Part,
                                Series, Limit, Limits)
 
-from pytest import raises
-import time
+import schemata
 
 
 def test_limit():
@@ -141,11 +144,11 @@ MEAS1 = '''{
 
 
 def test_parse_measurement():
-    msg = loads(MEAS1)
-    assert msg.device.deviceID == "a4927dad-58d4-4580-b460-79cefd56775b"
-    assert msg.part.partID == "P918298"
-    assert len(msg.measurements) == 2
-    samples = list(msg.measurements[0].samples())
+    meas_msg = loads(MEAS1)
+    assert meas_msg.device.deviceID == "a4927dad-58d4-4580-b460-79cefd56775b"
+    assert meas_msg.part.partID == "P918298"
+    assert len(meas_msg.measurements) == 2
+    samples = list(meas_msg.measurements[0].samples())
     assert len(samples) == 3
     tz_plus2 = dateutil.tz.tzoffset("+02:00", 2 * 60 * 60)
     assert samples[0] == {
@@ -156,8 +159,10 @@ def test_parse_measurement():
         "ts": datetime.datetime(2002, 5, 30, 9, 30, 10, 146000, tz_plus2),
         "temperature": 46.4222,
     }, samples[1]
-    m2 = msg.measurements[1]
+    m2 = meas_msg.measurements[1]
     assert m2.limits.pressure.upperError == 422
+
+    schemata.validate_measurement(meas_msg)
 
 
 def test_series():

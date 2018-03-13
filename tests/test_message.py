@@ -13,12 +13,13 @@
 # flake8: noqa
 import datetime
 import dateutil.tz
+from pytest import raises
 
 from unide.util import loads, dumps
 from unide.common import Device
 from unide.message import Message, MessagePayload
 
-from pytest import raises
+import schemata
 
 
 def roundtrip(obj):
@@ -63,13 +64,14 @@ def test_load_minimal():
     m = Message(ts=datetime.datetime(2002, 5, 30, 9, 30, 10, 123000, tz_plus2),
                 code="190ABT")
     assert msg.messages[0] == m
+    schemata.validate_message(msg)
 
 
 def test_make_minimal():
     Device("2ca5158b-8350-4592-bff9-755194497d4e")
 
 
-MULTIPLE='''{
+MULTIPLE = '''{
   "content-spec":"urn:spec://eclipse.org/unide/machine-message#v2",
   "device": {
     "deviceID": "2ca5158b-8350-4592-bff9-755194497d4e",
@@ -102,7 +104,6 @@ MULTIPLE='''{
 }'''
 
 
-
 def test_load_multiple():
     msg = loads(MULTIPLE)
     assert msg.device.deviceID == "2ca5158b-8350-4592-bff9-755194497d4e"
@@ -116,9 +117,13 @@ def test_load_multiple():
     assert msg.messages[0].hint == "Check the control board"
     assert msg.messages[0].metaData["firmware"] == "20130304_22.020"
 
+    schemata.validate_message(msg)
+
 
 def test_convience_api():
     device = Device(deviceID="2098390", supplier="Contact")
     msg = loads(device.message("AB910T", hint="Axis is broken"))
     assert msg.device.deviceID == "2098390"
     assert msg.messages[0].code == "AB910T"
+
+    schemata.validate_message(msg)

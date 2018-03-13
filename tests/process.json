@@ -61,16 +61,16 @@
                     "target" :  35  
                 }
             },
-            "specialValues" : {
-                "pressure" : {
-                    "time" : 24,
-                    "value" : 44.2432
-                },
-                "force" :  {
-                    "time" : 24,
-                    "value" : 24
+            "specialValues" : [
+                {
+                    "$_time": 12,
+                    "name": "some-special-stuff",
+                    "value": {
+                        "pressure": 44.2432,
+                        "force": 24
+                    }
                 }
-            },
+            ],
             "series" : {
                 "time" : [0, 23, 24],
                 "force" : [26, 23, 24],
@@ -92,14 +92,16 @@
                     "lowerError" : [50, 44, 42]
                 }
             },
-            "specialValues" : {
-                "pressure" : {
-                    "value" : 24
-                },
-                "force" : {
-                    "value": 50
+            "specialValues" : [
+                {
+                    "$_time": 12,
+                    "name": "some-special-stuff",
+                    "value": {
+                        "pressure": 44.2432,
+                        "force": 24
+                    }
                 }
-            },
+            ],
             "series" : {
                 "time" : [30, 36, 42],
                 "force" : [26, 23, 24],

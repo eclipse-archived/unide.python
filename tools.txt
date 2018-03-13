@@ -12,3 +12,4 @@ tox-pyenv
 zest.releaser[recommended]
 xenon
 twine
+jsonschema

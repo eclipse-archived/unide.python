@@ -15,6 +15,7 @@
 import datetime
 from collections import OrderedDict
 import dateutil.parser
+import numbers
 
 from . import util
 
@@ -103,7 +104,7 @@ class Object(object):
     @classmethod
     def load(cls, data):
         """Create an object of type `cls` using the dict `data`, that has been
-        created by a JSON readed.
+        created by a JSON read.
         """
         self = make_object(cls, data)
         props = dict((p._name, p) for k, p in list(cls.__dict__.items())
@@ -328,6 +329,11 @@ def Map(name, *args, **kwargs):
     return Property(name, default=StringMap, *args, **kwargs)
 
 
+def NumberMap(name, *args, **kwargs):
+    """A Property that is a String:Float map"""
+    return Property(name, default=Float, *args, **kwargs)
+
+
 def Datetime(name, null=True):
     """A datetime property."""
     return Property(
@@ -360,3 +366,16 @@ class StringMap(OrderedDict):
             super(StringMap, self).__setitem__(key, value)
         else:
             raise ValueError("StringMap requires strings for keys and values")
+
+
+class RealNumberMap(OrderedDict):
+
+    def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
+        if not isinstance(key, stringy_types):
+            raise ValueError('NumberMap requires strings for keys')
+
+        if not isinstance(value, numbers.Real):
+            raise ValueError('NumberMap requires real numbers for keys')
+
+        super(RealNumberMap, self).__setitem__(key, value)
+

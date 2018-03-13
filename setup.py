@@ -53,6 +53,6 @@ setup(
     install_requires=[
         "python-dateutil",
     ],
-    tests_require=["pytest"],
+    tests_require=["pytest", "jsonschema"],
     cmdclass={'test': PyTest},
 )

@@ -12,39 +12,54 @@ import json
 
 from pytest import raises
 
+import schemata
+
+
+def read(path):
+    with open(path) as f:
+        return f.read()
+
 
 def test_measurement():
-    data = open("tests/measurement.json").read()
+    data = read("tests/measurement.json")
     msg = dumps(loads(data))
+
     orig = json.loads(data)
     out = json.loads(msg)
     assert orig == out
+
+    print json.dumps(out, indent=2)
+    schemata.validate_measurement(loads(data))
 
 
 def test_message():
-    data = open("tests/message.json").read()
+    data = read("tests/message.json")
     msg = dumps(loads(data))
     orig = json.loads(data)
     out = json.loads(msg)
     assert orig == out
+
+    schemata.validate_message(loads(data))
 
 
 def test_process():
-    data = open("tests/process.json").read()
+    data = read("tests/process.json")
     msg = dumps(loads(data))
     orig = json.loads(data)
     out = json.loads(msg)
     assert orig == out
+
+    schemata.validate_process(loads(data))
 
 
 def test_validation1():
     with raises(ValidationError):
-        data = open("tests/invalid.json").read()
+        data = read("tests/invalid.json")
         loads(data, validate=True)
 
 
 def test_validation2():
-    data = open("tests/invalid.json").read()
+    data = read("tests/invalid.json")
     msg = loads(data, validate=False)
     errors = msg.problems()
     assert len(errors) > 0
