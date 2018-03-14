@@ -27,7 +27,7 @@ def test_empty_object():
 class BasicFields(Object):
     f_string = String(20, null=False)
     f_float = Float()
-    f_datetime = Datetime("f_datetime")
+    f_datetime = Datetime()
     f_enum = String(oneof=["A", "B", "C"])
 
 

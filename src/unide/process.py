@@ -54,7 +54,7 @@ class Program(Object):
     """
     id = String(36, null=False)
     name = String(256, null=False)
-    lastChangedDate = Datetime("lastChangedDate")
+    lastChangedDate = Datetime()
 
     def __init__(self, id, name, lastChangedDate=None):
         # pylint: disable=redefined-builtin
@@ -66,7 +66,7 @@ class Program(Object):
 class ShutoffValue(Object):
     """The final value of the process."""
     value = Float()
-    ts = Datetime("ts")
+    ts = Datetime()
     upperError = Float()
     lowerError = Float()
     upperWarning = Float()
@@ -87,7 +87,7 @@ class Process(Object):
     """The process message is the format to exchange data out of discrete
     processes. It also allows to transport process information, part
     information and measurement data for each phase of the process."""
-    ts = Datetime("ts", null=False)
+    ts = Datetime(null=False)
     externalProcessId = String(36)
     result = Result()
     shutoffPhase = String()
@@ -256,7 +256,7 @@ class Measurement(Object):
     information about that specific execution step. All phases should
     be sorted by the timestamp of the phase.
     """
-    ts = Datetime("ts", null=False)
+    ts = Datetime(null=False)
     phase = String(256)
     name = String(256)
     result = Result()

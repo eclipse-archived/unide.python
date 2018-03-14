@@ -253,7 +253,7 @@ class Object(object):
         return self
 
     def __eq__(self, other):
-        return self._data.__eq__(other._data)
+        return self._data == other._data
 
     def __ne__(self, other):
         return not self == other
@@ -358,14 +358,15 @@ def NumberMap(name, *args, **kwargs):
     return Property(name, default=Float, *args, **kwargs)
 
 
-def Datetime(name=None, null=True):
+def Datetime(null=True, **kwargs):
     """A datetime property."""
     return Property(
-        name=name,
         types=datetime.datetime,
         convert=util.local_timezone,
         load=dateutil.parser.parse,
-        null=null)
+        null=null,
+        **kwargs
+    )
 
 
 def InstanceOf(cls, **kwargs):

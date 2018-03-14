@@ -140,7 +140,7 @@ class Series(HasDimensions):
         ...
     """
     __dimtype__ = list
-    offsets = Property("$_time")
+    offsets = ListOf(name="$_time", cls=Float)
 
     def __init__(self, *dimensions):
         super(Series, self).__init__(*dimensions)
