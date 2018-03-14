@@ -29,7 +29,7 @@ class Part(Object):
     partID = String(256, null=False)
     result = Result()
     code = Code()
-    metaData = Map("metaData")
+    metaData = Map()
 
     def __init__(self,
                  type,
@@ -91,7 +91,7 @@ class Process(Object):
     externalProcessId = String(36)
     result = Result()
     shutoffPhase = String()
-    metaData = Map("metaData")
+    metaData = Map()
     program = InstanceOf(Program)
     shutoffValues = InstanceOf(ShutoffValues, default=ShutoffValues)
 

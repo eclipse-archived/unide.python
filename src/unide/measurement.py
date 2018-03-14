@@ -223,7 +223,7 @@ class Part(Object):
     partID = String(256)
     result = Result()
     code = Code()
-    metaData = Map("metaData")
+    metaData = Map()
 
     def __init__(self,
                  partTypeID=None,

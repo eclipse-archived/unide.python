@@ -348,9 +348,9 @@ def Float(**kwargs):
     return Property(types=float, convert=float, **kwargs)
 
 
-def Map(name=None, *args, **kwargs):
+def Map(**kwargs):
     """A property that is a String:String map."""
-    return Property(name=name, default=StringMap, *args, **kwargs)
+    return Property(default=StringMap, **kwargs)
 
 
 def NumberMap(name, *args, **kwargs):

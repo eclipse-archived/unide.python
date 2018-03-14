@@ -69,7 +69,7 @@ class Device(Object):
     """
     deviceID = DeviceID()
     operationalStatus = String()
-    metaData = Map("metaData")
+    metaData = Map()
 
     def __init__(self, deviceID, operationalStatus=None, **metaData):
         self.deviceID = deviceID
