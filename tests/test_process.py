@@ -86,7 +86,7 @@ def test_build_sample():
 
     m.limits.add_dimension("force")
     m.limits.force.upperError = [27, 24, 25]
-    m.limits.force.loweerError = [25, 22, 23]
+    m.limits.force.lowerError = [25, 22, 23]
 
     m.limits.add_dimension("pressure")
     m.limits.pressure.upperError = [54, 48, 46]

@@ -173,23 +173,23 @@ class Limit(Object):
     :param float lowerWarn: Indicates the lower warning threshold,
         given by the device/integrator. Optional
     """
-    upperError = Property("upperError")
-    lowerError = Property("lowerError")
-    upperWarning = Property("upperWarning")
-    lowerWarning = Property("lowerWarning")
-    target = Property("target")
+    upperError = Property()
+    lowerError = Property()
+    upperWarn = Property()
+    lowerWarn = Property()
+    target = Property()
 
     def __init__(self,
                  upperError=None,
                  lowerError=None,
-                 upperWarning=None,
-                 lowerWarning=None,
+                 upperWarn=None,
+                 lowerWarn=None,
                  target=None):
         # pylint: disable=too-many-arguments
         self.upperError = upperError
         self.lowerError = lowerError
-        self.upperWarning = upperWarning
-        self.lowerWarning = lowerWarning
+        self.upperWarn = upperWarn
+        self.lowerWarn = lowerWarn
         self.target = target
 
 
@@ -309,7 +309,7 @@ class ProcessPayload(Object):
 
     def __init__(self, device, process, part=None, measurements=None):
         self._data["content-spec"] = self.CONTENT_SPEC
-        self.deivce = device
+        self.device = device
         self.process = process
         self.part = part
         self.measurements = measurements

@@ -117,7 +117,7 @@ def test_bad_date():
 def test_default_value():
 
     class DefaultValue(Object):
-        f_prop = Property("f_prop", default=lambda: "bar")
+        f_prop = Property(default=lambda: "bar")
 
     obj = DefaultValue()
     assert obj.f_prop == "bar"
