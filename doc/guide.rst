@@ -42,8 +42,8 @@ Unset properties are `None` in the Python API, but will not be
 serialized as 'null' into JSON, i.e. unset properties will not appear
 in the JSON output at all. Strings are mapped to and from Python
 Unicode strings (i.e. `unicode` for Python 2, and `str` for Python
-3). Numeric values are mapped to Python `float`. Timestamps are mapped
-to Python's :py:class:`datetime <datetime.datetime>` (see
+3). Numeric values are mapped to Python `float` or `int`. Timestamps
+are mapped to Python's :py:class:`datetime <datetime.datetime>` (see
 `Timestamps`_ for details).
 
 Every PPMP entity can be build separately, and re-used later to
@@ -53,7 +53,7 @@ that has just one mandatory property, its `deviceID`::
   >>> from unide.common import Device
   >>> device = Device("Device-001")
   >>> print(device.deviceID == "Device-001")
-  Device-001
+  True
 
 All other properties of ``device`` are now `None` and can be assigned
 a value::
