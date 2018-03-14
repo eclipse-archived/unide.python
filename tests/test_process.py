@@ -66,7 +66,10 @@ def test_build_sample():
     m.limits.temperature.upperWarn = 2222
     m.limits.temperature.lowerWarn = 46
 
-    m.specialValues.append(SpecialValue(name='turning point', value={"pressure": 24, "force": 50}))
+    m.specialValues.append(
+        SpecialValue(name='turning point',
+                     value={"pressure": 24, "force": 50}))
+
     m.series.add_dimension("time")
     m.series.add_dimension("force")
     m.series.add_dimension("pressure")
@@ -89,7 +92,9 @@ def test_build_sample():
     m.limits.pressure.upperError = [54, 48, 46]
     m.limits.pressure.lowerError = [50, 44, 42]
 
-    m.specialValues.append(SpecialValue(name='some special value', value={'force': 50, 'pressure': 24}))
+    m.specialValues.append(
+        SpecialValue(name='some special value',
+                     value={'force': 50, 'pressure': 24}))
 
     m.series.add_dimension("time")
     m.series.add_dimension("force")

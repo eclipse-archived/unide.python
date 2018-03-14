@@ -14,8 +14,9 @@
 
 import datetime
 from collections import OrderedDict
-import dateutil.parser
 import numbers
+
+import dateutil.parser
 
 from . import util
 
@@ -369,6 +370,7 @@ class StringMap(OrderedDict):
 
 
 class RealNumberMap(OrderedDict):
+    """Dictionary string to real number"""
 
     def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
         if not isinstance(key, stringy_types):
@@ -378,4 +380,3 @@ class RealNumberMap(OrderedDict):
             raise ValueError('NumberMap requires real numbers for keys')
 
         super(RealNumberMap, self).__setitem__(key, value)
-

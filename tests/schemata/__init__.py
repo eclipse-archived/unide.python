@@ -33,7 +33,9 @@ def validate_object(ppmp_obj, schema):
     validate(json.loads(dumps(ppmp_obj)), schema)
 
 
-validate_measurement = partial(validate_object, schema=read_json('measurement_schema.json'))
-validate_message = partial(validate_object, schema=read_json('message_schema.json'))
-validate_process = partial(validate_object, schema=read_json('process_schema.json'))
-
+validate_measurement = partial(validate_object,
+                               schema=read_json('measurement_schema.json'))
+validate_message = partial(validate_object,
+                           schema=read_json('message_schema.json'))
+validate_process = partial(validate_object,
+                           schema=read_json('process_schema.json'))
