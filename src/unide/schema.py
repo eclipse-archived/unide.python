@@ -348,6 +348,11 @@ def Float(**kwargs):
     return Property(types=float, convert=float, **kwargs)
 
 
+def Integer(**kwargs):
+    """An integer property."""
+    return Property(types=int, convert=int, **kwargs)
+
+
 def Map(**kwargs):
     """A property that is a String:String map."""
     return Property(default=StringMap, **kwargs)
@@ -374,13 +379,13 @@ def InstanceOf(cls, **kwargs):
     return Property(types=cls, load=cls.load, **kwargs)
 
 
-def ListOf(name, cls):
+def ListOf(cls, **kwargs):
     """A property that is a list of `cls`."""
 
     def _list_load(value):
         return [cls.load(d) for d in value]
 
-    return Property(name, types=list, load=_list_load, default=list)
+    return Property(types=list, load=_list_load, default=list, **kwargs)
 
 
 class StringMap(OrderedDict):

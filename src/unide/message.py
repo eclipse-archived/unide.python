@@ -103,7 +103,7 @@ class MessagePayload(Object):
     measurement data or status."""
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/machine-message#v2"
     device = InstanceOf(Device, null=False)
-    messages = ListOf("messages", Message)
+    messages = ListOf(Message)
 
     def __init__(self, device):
         self._data["content-spec"] = self.CONTENT_SPEC

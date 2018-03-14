@@ -261,7 +261,7 @@ class Measurement(Object):
     name = String(256)
     result = Result()
     code = Code()
-    specialValues = ListOf("specialValues", SpecialValue)
+    specialValues = ListOf(SpecialValue)
     series = InstanceOf(Series, default=Series)
     limits = InstanceOf(Limits, default=Limits)
 
@@ -305,7 +305,7 @@ class ProcessPayload(Object):
     device = InstanceOf(Device)
     part = InstanceOf(Part)
     process = InstanceOf(Process)
-    measurements = ListOf("measurements", Measurement)
+    measurements = ListOf(Measurement)
 
     def __init__(self, device, process, part=None, measurements=None):
         self._data["content-spec"] = self.CONTENT_SPEC

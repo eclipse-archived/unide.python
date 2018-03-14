@@ -18,8 +18,8 @@ transport multiple measurement data (eg. values over time), called
 import datetime
 
 from .util import payload_wrapper, local_now, dumps
-from .schema import (Object, make_object, Property, String, Float, Map,
-                     Datetime, InstanceOf, ListOf, HasDimensions)
+from .schema import (Object, make_object, String, Float, Map,
+                     Datetime, InstanceOf, ListOf, HasDimensions, Integer)
 from .common import (Result, Code, Device)
 
 
@@ -140,7 +140,7 @@ class Series(HasDimensions):
         ...
     """
     __dimtype__ = list
-    offsets = ListOf(name="$_time", cls=Float)
+    offsets = ListOf(name="$_time", cls=Integer)
 
     def __init__(self, *dimensions):
         super(Series, self).__init__(*dimensions)
@@ -249,7 +249,7 @@ class MeasurementPayload(Object):
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/measurement-message#v2"
     device = InstanceOf(Device)
     part = InstanceOf(Part)
-    measurements = ListOf("measurements", Measurement)
+    measurements = ListOf(Measurement)
 
     def __init__(self, device, part=None, measurements=None):
         if not measurements:
