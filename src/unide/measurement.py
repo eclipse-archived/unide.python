@@ -36,10 +36,10 @@ class Limit(Object):
     :param float lowerWarn: Indicates the lower warning threshold,
         given by the device/integrator. Optional
     """
-    upperError = Float("upperError")
-    lowerError = Float("lowerError")
-    upperWarning = Float("upperWarning")
-    lowerWarning = Float("lowerWarning")
+    upperError = Float()
+    lowerError = Float()
+    upperWarning = Float()
+    lowerWarning = Float()
 
     def __init__(self,
                  upperError=None,

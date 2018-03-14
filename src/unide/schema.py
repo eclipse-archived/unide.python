@@ -343,9 +343,9 @@ def String(length=None, **kwargs):
     )
 
 
-def Float(name, **kwargs):
+def Float(**kwargs):
     """A float property."""
-    return Property(name, types=float, convert=float, **kwargs)
+    return Property(types=float, convert=float, **kwargs)
 
 
 def Map(name=None, *args, **kwargs):

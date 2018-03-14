@@ -65,12 +65,12 @@ class Program(Object):
 
 class ShutoffValue(Object):
     """The final value of the process."""
-    value = Float("value")
+    value = Float()
     ts = Datetime("ts")
-    upperError = Float("upperError")
-    lowerError = Float("lowerError")
-    upperWarning = Float("upperWarning")
-    lowerWarning = Float("lowerWarning")
+    upperError = Float()
+    lowerError = Float()
+    upperWarning = Float()
+    lowerWarning = Float()
 
 
 class ShutoffValues(HasDimensions):
@@ -116,7 +116,7 @@ class Process(Object):
 
 class SpecialValue(Object):
     """One of the `SpecialValues`."""
-    time = Float("time")
+    time = Float()
     name = String()
     value = NumberMap('value')
 
