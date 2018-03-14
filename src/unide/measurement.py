@@ -175,11 +175,11 @@ class Measurement(Object):
         added to the measurements list as individual block.
 
     """
-    ts = Datetime("ts", null=False)
+    ts = Datetime(null=False)
     result = Result()
     code = Code()
-    series = InstanceOf("series", Series, default=Series)
-    limits = InstanceOf("limits", Limits, default=Limits)
+    series = InstanceOf(Series, default=Series)
+    limits = InstanceOf(Limits, default=Limits)
 
     def __init__(self, ts=None, result=None, code=None, dimensions=None):
         if dimensions is None:
@@ -247,8 +247,8 @@ class MeasurementPayload(Object):
     'series'.
     """
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/measurement-message#v2"
-    device = InstanceOf("device", Device)
-    part = InstanceOf("part", Part)
+    device = InstanceOf(Device)
+    part = InstanceOf(Part)
     measurements = ListOf("measurements", Measurement)
 
     def __init__(self, device, part=None, measurements=None):

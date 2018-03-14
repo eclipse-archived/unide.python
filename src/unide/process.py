@@ -99,9 +99,8 @@ class Process(Object):
     result = Result()
     shutoffPhase = String("shutoffPhase")
     metaData = Map("metaData")
-    program = InstanceOf("program", Program)
-    shutoffValues = InstanceOf(
-        "shutoffValues", ShutoffValues, default=ShutoffValues)
+    program = InstanceOf(Program)
+    shutoffValues = InstanceOf(ShutoffValues, default=ShutoffValues)
 
     def __init__(self,
                  ts=None,
@@ -270,8 +269,8 @@ class Measurement(Object):
     result = Result()
     code = Code()
     specialValues = ListOf("specialValues", SpecialValue)
-    series = InstanceOf("series", Series, default=Series)
-    limits = InstanceOf("limits", Limits, default=Limits)
+    series = InstanceOf(Series, default=Series)
+    limits = InstanceOf(Limits, default=Limits)
 
     # pylint: disable=too-many-arguments
     def __init__(self,
@@ -310,9 +309,9 @@ class ProcessPayload(Object):
     information and measurement data for each phase of the process.
     """
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/process-message#v2"
-    device = InstanceOf("device", Device)
-    part = InstanceOf("part", Part)
-    process = InstanceOf("process", Process)
+    device = InstanceOf(Device)
+    part = InstanceOf(Part)
+    process = InstanceOf(Process)
     measurements = ListOf("measurements", Measurement)
 
     def __init__(self, device, process, part=None, measurements=None):

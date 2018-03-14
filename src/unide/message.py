@@ -63,15 +63,15 @@ class Message(Object):
         can be used to point out a possible solution.
 
     """
-    ts = Datetime("ts")
-    origin = String("origin")
+    ts = Datetime()
+    origin = String()
     type = MessageType()
     severity = Severity()
     code = Code(null=False)
-    title = String("title", 1000)
-    description = String("description", 2000)
-    hint = String("hint", 2000)
-    metaData = Map("metaData")
+    title = String(length=1000)
+    description = String(length=2000)
+    hint = String(length=2000)
+    metaData = Map()
 
     def __init__(self,
                  code,
@@ -102,7 +102,7 @@ class MessagePayload(Object):
     and integrators to send messages containing an interpretation of
     measurement data or status."""
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/machine-message#v2"
-    device = InstanceOf("device", Device)
+    device = InstanceOf(Device, null=False)
     messages = ListOf("messages", Message)
 
     def __init__(self, device):

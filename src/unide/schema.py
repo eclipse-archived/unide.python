@@ -41,6 +41,139 @@ __all__ = [
 ]
 
 
+class Property(object):
+    """A PPMP property, described by name, type, max. length etc."""
+
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self,
+                 name=None,
+                 types=None,
+                 oneof=None,
+                 length=None,
+                 default=None,
+                 null=True,
+                 convert=None,
+                 load=None):
+        # pylint: disable=too-many-arguments
+        self._name = name
+        self._default = default
+        self._null = null
+        self._types = types
+        self._length = length
+        self._oneof = oneof
+        self._convert = convert
+        self._load = load
+
+    # pylint: disable=unused-argument
+    def _check_null(self, fieldname, obj, value, errors):
+        if value is None:
+            if not self._null:
+                errors.append("%s may not be 'null'" % fieldname)
+            return True
+
+        return False
+
+    def _check_type(self, fieldname, obj, value, errors):
+        if self._types and not isinstance(value, self._types):
+            errors.append("%r is not an appropriate value "
+                          "for %s (wrong type)" % (value, fieldname))
+            return True
+
+        return False
+
+    def _check_length(self, fieldname, obj, value, errors):
+        if self._length is not None:
+            if len(value) > self._length:
+                errors.append("%s may not be longer than %s" % (fieldname,
+                                                                self._length))
+            return True
+
+        return False
+
+    def _check_one_of(self, fieldname, obj, value, errors):
+        if self._oneof:
+            if value not in self._oneof:
+                errors.append("%r must be one of %s" %
+                              (value, ", ".join(str(x) for x in self._oneof)))
+            return True
+
+        return False
+
+    def _check_problems(self, fieldname, obj, value, errors):
+        # pylint: disable=no-self-use
+        if hasattr(value, "problems"):
+            value.problems(errors)
+            return True
+
+        return False
+
+    def check(self, obj, value, errors):
+        """Check if `value` is valid this property in the entity `obj`. Append
+        validation results to `errors` (list).
+        """
+        fieldname = "%s.%s" % (type(obj).__name__, self._name)
+        for checker in (self._check_null, self._check_type, self._check_length,
+                        self._check_one_of, self._check_problems):
+            if checker(fieldname, obj, value, errors):
+                break
+        return len(errors) == 0
+
+    def load(self, value):
+        """Load a property value from its JSON representation."""
+        if self._load:
+            value = self._load(value)
+        return value
+
+    def convert(self, value):
+        """Convert a value from Python to an internal representation that is
+        conformant.
+        """
+        if self._convert is not None:
+            value = self._convert(value)
+        return value
+
+    def __get__(self, obj, cls=None):
+        if self._default:
+            return obj._data.setdefault(self._name, self._default())
+
+        return obj._data.get(self._name, None)
+
+    def __set__(self, obj, value):
+        errors = []
+        if value is None:
+            # We don't want non-existing properties to appear as
+            # 'null' in the JSON output, thus we'll remove the key
+            # here, but we'll still have to check for null.
+            self.check(obj, value, errors)
+            self.__delete__(obj)
+        else:
+            value = self.convert(value)
+            self.check(obj, value, errors)
+
+            if not errors:
+                obj._data[self._name] = value
+
+        if errors:
+            raise ValueError("\n".join(errors))
+
+    def __delete__(self, obj):
+        # NOTE [bgu 22-09-2017]: .pop with default allows
+        # not to check if key is present
+        obj._data.pop(self._name, None)
+
+
+class MetaObject(type):
+
+    def __init__(cls, name, bases, kwattrs):
+        # Synchronize the class attribute name with the Property._name
+        for key, value in kwattrs.items():
+            if isinstance(value, Property):
+                if value._name is None:
+                    value._name = key
+
+        super(MetaObject, cls).__init__(name, bases, kwattrs)
+
+
 class Object(object):
     """All JSON-serializable things are represented as specializations of
     `Object` that provide an API to work with that particular part of
@@ -52,6 +185,7 @@ class Object(object):
     by building an empty wrapper and settings it `_dict` to the
     sub-structure.
     """
+    __metaclass__ = MetaObject
 
     def __new__(cls, *args, **kwargs):
         # `Object` does not have `__init__` but `__new__` to setup a
@@ -62,8 +196,10 @@ class Object(object):
         # pylint: disable=unused-argument
         self = object.__new__(cls)
         self._data = OrderedDict()
-        for name, value in list(kwargs.items()):
+
+        for name, value in kwargs.items():
             setattr(self, name, value)
+
         return self
 
     def is_excess_field_ok(self, name):
@@ -189,135 +325,23 @@ class HasDimensions(Object):
         return self
 
 
-class Property(object):
-    """A PPMP property, described by name, type, max. length etc."""
-
-    # pylint: disable=too-many-instance-attributes
-    def __init__(self,
-                 name,
-                 types=None,
-                 oneof=None,
-                 length=None,
-                 default=None,
-                 null=True,
-                 convert=None,
-                 load=None):
-        # pylint: disable=too-many-arguments
-        self._name = name
-        self._default = default
-        self._null = null
-        self._types = types
-        self._length = length
-        self._oneof = oneof
-        self._convert = convert
-        self._load = load
-
-    # pylint: disable=unused-argument
-    def _check_null(self, fieldname, obj, value, errors):
-        if value is None:
-            if not self._null:
-                errors.append("%s may not be 'null'" % fieldname)
-            return True
-
-        return False
-
-    def _check_type(self, fieldname, obj, value, errors):
-        if self._types and not isinstance(value, self._types):
-            errors.append("%r is not an appropriate value "
-                          "for %s (wrong type)" % (value, fieldname))
-            return True
-
-        return False
-
-    def _check_length(self, fieldname, obj, value, errors):
-        if self._length is not None:
-            if len(value) > self._length:
-                errors.append("%s may not be longer than %s" % (fieldname,
-                                                                self._length))
-            return True
-
-        return False
-
-    def _check_one_of(self, fieldname, obj, value, errors):
-        if self._oneof:
-            if value not in self._oneof:
-                errors.append("%r must be one of %s" %
-                              (value, ", ".join(str(x) for x in self._oneof)))
-            return True
-
-        return False
-
-    def _check_problems(self, fieldname, obj, value, errors):
-        # pylint: disable=no-self-use
-        if hasattr(value, "problems"):
-            value.problems(errors)
-            return True
-
-        return False
-
-    def check(self, obj, value, errors):
-        """Check if `value` is valid this property in the entity `obj`. Append
-        validation results to `errors` (list).
-        """
-        fieldname = "%s.%s" % (type(obj).__name__, self._name)
-        for checker in (self._check_null, self._check_type, self._check_length,
-                        self._check_one_of, self._check_problems):
-            if checker(fieldname, obj, value, errors):
-                break
-        return len(errors) == 0
-
-    def load(self, value):
-        """Load a property value from its JSON representation."""
-        if self._load:
-            value = self._load(value)
-        return value
-
-    def convert(self, value):
-        """Convert a value from Python to an internal representation that is
-        conformant.
-        """
-        if self._convert is not None:
-            value = self._convert(value)
-        return value
-
-    def __get__(self, obj, cls=None):
-        if self._default:
-            return obj._data.setdefault(self._name, self._default())
-        return obj._data.get(self._name, None)
-
-    def __set__(self, obj, value):
-        errors = []
-        if value is None:
-            # We don't want non-existing properties to appear as
-            # 'null' in the JSON output, thus we'll remove the key
-            # here, but we'll still have to check for null.
-            self.check(obj, value, errors)
-            self.__delete__(obj)
-        else:
-            value = self.convert(value)
-            self.check(obj, value, errors)
-            if not errors:
-                obj._data[self._name] = value
-        if errors:
-            raise ValueError("\n".join(errors))
-
-    def __delete__(self, obj):
-        # NOTE [bgu 22-09-2017]: .pop with default allows
-        # not to check if key is present
-        obj._data.pop(self._name, None)
-
-
 def to_string(value):
     """Convert value to string."""
     if isinstance(value, stringy_types):
         value = str(value)
+
     return value
 
 
-def String(name, length=None, **kwargs):
+def String(name=None, length=None, **kwargs):
     """A string valued property with max. `length`."""
     return Property(
-        name, length=length, types=stringy_types, convert=to_string, **kwargs)
+        name=name,
+        length=length,
+        types=stringy_types,
+        convert=to_string,
+        **kwargs
+    )
 
 
 def Float(name, **kwargs):
@@ -325,9 +349,9 @@ def Float(name, **kwargs):
     return Property(name, types=float, convert=float, **kwargs)
 
 
-def Map(name, *args, **kwargs):
+def Map(name=None, *args, **kwargs):
     """A property that is a String:String map."""
-    return Property(name, default=StringMap, *args, **kwargs)
+    return Property(name=name, default=StringMap, *args, **kwargs)
 
 
 def NumberMap(name, *args, **kwargs):
@@ -335,19 +359,19 @@ def NumberMap(name, *args, **kwargs):
     return Property(name, default=Float, *args, **kwargs)
 
 
-def Datetime(name, null=True):
+def Datetime(name=None, null=True):
     """A datetime property."""
     return Property(
-        name,
+        name=name,
         types=datetime.datetime,
         convert=util.local_timezone,
         load=dateutil.parser.parse,
         null=null)
 
 
-def InstanceOf(name, cls, **kwargs):
+def InstanceOf(cls, **kwargs):
     """A property that is an instance of `cls`."""
-    return Property(name, types=cls, load=cls.load, **kwargs)
+    return Property(types=cls, load=cls.load, **kwargs)
 
 
 def ListOf(name, cls):

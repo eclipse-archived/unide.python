@@ -60,7 +60,7 @@ class Device(Object):
 
     Example:
 
-    >>> from pyppmp.measurement import Device
+    >>> from unide.measurement import Device
     >>> device = Device("0910298309812398")
     >>> print device.deviceID
     0910298309812398
@@ -73,5 +73,4 @@ class Device(Object):
     def __init__(self, deviceID, operationalStatus=None, **metaData):
         self.deviceID = deviceID
         self.operationalStatus = operationalStatus
-        if metaData:
-            self.metaData.update(metaData)
+        self.metaData.update(metaData)

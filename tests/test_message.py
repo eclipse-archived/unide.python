@@ -41,6 +41,9 @@ def test_check_mandatory():
     with raises(ValueError):
         Message(code=None)
 
+    with raises(ValueError):
+        MessagePayload(device=None)
+
 
 MINIMAL = '''{
   "content-spec":"urn:spec://eclipse.org/unide/machine-message#v2",
