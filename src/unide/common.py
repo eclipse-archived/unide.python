@@ -15,30 +15,31 @@
 from .schema import String, Object, Map
 
 
-def Code(null=True):
-    """The code is an addendum to the result which allows to pass
+def Code(null=True, **kwargs):
+    """
+    The code is an addendum to the result which allows to pass
     information in the case the result was NOK.  The value often stems
     from the integrated system e.g. a PLC.
     """
-    return String("code", 36, null=null)
+    return String(36, null=null, **kwargs)
 
 
-def DeviceID(null=False):
+def DeviceID(null=False, **kwargs):
     """The unique ID of the device. As this is used to identify a device
     independently from time or location. The ID itself must be stable
     and unique. The recommendation is to use a universally unique
     identifier (UUID). Reprentation could follow GIAI, UUID or
     others.
     """
-    return String("deviceID", 36, null=null)
+    return String(36, null=null, **kwargs)
 
 
-def Result():
+def Result(**kwargs):
     """Information if the quality of the produced part was ok or
     not. Possible values: 'UNKNOWN', 'OK' or 'NOK'. Default value is
     'UNKNOWN'
     """
-    return String("result", oneof=('OK', 'NOK', 'UNKNOWN'))
+    return String(oneof=['OK', 'NOK', 'UNKNOWN'], **kwargs)
 
 
 class Device(Object):
@@ -67,7 +68,7 @@ class Device(Object):
 
     """
     deviceID = DeviceID()
-    operationalStatus = String("operationalStatus")
+    operationalStatus = String()
     metaData = Map("metaData")
 
     def __init__(self, deviceID, operationalStatus=None, **metaData):

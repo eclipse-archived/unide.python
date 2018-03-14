@@ -19,16 +19,16 @@ from .schema import Object, String, Datetime, Map, InstanceOf, ListOf
 from .common import Device, Code
 
 
-def MessageType():
+def MessageType(**kwargs):
     """The type of message. Either 'DEVICE' or 'TECHNICAL_INFO'."""
-    return String("type", oneof=('DEVICE', 'TECHNICAL_INFO'))
+    return String(oneof=['DEVICE', 'TECHNICAL_INFO'], **kwargs)
 
 
-def Severity():
+def Severity(**kwargs):
     """Severity of the message. Possible values: 'HIGH' 'MEDIUM' 'LOW'
     'UNKNOWN'
     """
-    return String("severity", oneof=('HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'))
+    return String(oneof=['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN'], **kwargs)
 
 
 class Message(Object):

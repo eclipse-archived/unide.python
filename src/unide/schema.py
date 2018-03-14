@@ -333,10 +333,9 @@ def to_string(value):
     return value
 
 
-def String(name=None, length=None, **kwargs):
+def String(length=None, **kwargs):
     """A string valued property with max. `length`."""
     return Property(
-        name=name,
         length=length,
         types=stringy_types,
         convert=to_string,

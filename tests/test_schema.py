@@ -25,10 +25,10 @@ def test_empty_object():
 
 
 class BasicFields(Object):
-    f_string = String("f_string", 20, null=False)
+    f_string = String(20, null=False)
     f_float = Float("f_float")
     f_datetime = Datetime("f_datetime")
-    f_enum = String("f_enum", oneof=("A", "B", "C"))
+    f_enum = String(oneof=["A", "B", "C"])
 
 
 def test_basic_fields():

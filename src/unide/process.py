@@ -20,20 +20,13 @@ from .schema import (String, Object, Float, Datetime, InstanceOf, Map, ListOf,
 from .common import Device, Result, Code
 
 
-def PartType():
-    """Describes the type of the part. Type SINGLE means a single item is
-    processed. Type BATCH means multiple items of the same type are
-    processed. Default value is SINGLE."""
-    return String("type", oneof=('SINGLE', 'BATCH'))
-
-
 class Part(Object):
     """Contains information regarding the part which this payload relates
     to.
     """
-    partTypeID = String("partTypeID")
-    type = PartType()
-    partID = String("partID", 256, null=False)
+    partTypeID = String()
+    type = String(oneof=['SINGLE', 'BATCH'])
+    partID = String(256, null=False)
     result = Result()
     code = Code()
     metaData = Map("metaData")
@@ -59,8 +52,8 @@ class Program(Object):
     """Contains information about the program that was used in the
     process.
     """
-    id = String("id", 36, null=False)
-    name = String("name", 256, null=False)
+    id = String(36, null=False)
+    name = String(256, null=False)
     lastChangedDate = Datetime("lastChangedDate")
 
     def __init__(self, id, name, lastChangedDate=None):
@@ -95,9 +88,9 @@ class Process(Object):
     processes. It also allows to transport process information, part
     information and measurement data for each phase of the process."""
     ts = Datetime("ts", null=False)
-    externalProcessId = String("externalProcessId", 36)
+    externalProcessId = String(36)
     result = Result()
-    shutoffPhase = String("shutoffPhase")
+    shutoffPhase = String()
     metaData = Map("metaData")
     program = InstanceOf(Program)
     shutoffValues = InstanceOf(ShutoffValues, default=ShutoffValues)
@@ -124,7 +117,7 @@ class Process(Object):
 class SpecialValue(Object):
     """One of the `SpecialValues`."""
     time = Float("time")
-    name = String("name")
+    name = String()
     value = NumberMap('value')
 
 
@@ -264,8 +257,8 @@ class Measurement(Object):
     be sorted by the timestamp of the phase.
     """
     ts = Datetime("ts", null=False)
-    phase = String("phase", 256)
-    name = String("name", 256)
+    phase = String(256)
+    name = String(256)
     result = Result()
     code = Code()
     specialValues = ListOf("specialValues", SpecialValue)

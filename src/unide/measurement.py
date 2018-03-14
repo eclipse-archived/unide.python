@@ -219,8 +219,8 @@ class Part(Object):
     """Contains information regarding the part which this payload relates
     to.
     """
-    partTypeID = String("partTypeID")
-    partID = String("partID", 256)
+    partTypeID = String()
+    partID = String(256)
     result = Result()
     code = Code()
     metaData = Map("metaData")
