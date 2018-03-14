@@ -15,6 +15,7 @@
 import datetime
 from collections import OrderedDict
 import numbers
+import six
 
 import dateutil.parser
 
@@ -163,17 +164,21 @@ class Property(object):
 
 
 class MetaObject(type):
+    """
+    Metaclass for `Object` classes
+
+    """
 
     def __init__(cls, name, bases, kwattrs):
         # Synchronize the class attribute name with the Property._name
         for key, value in kwattrs.items():
-            if isinstance(value, Property):
-                if value._name is None:
-                    value._name = key
+            if isinstance(value, Property) and value._name is None:
+                value._name = key
 
         super(MetaObject, cls).__init__(name, bases, kwattrs)
 
 
+@six.add_metaclass(MetaObject)
 class Object(object):
     """All JSON-serializable things are represented as specializations of
     `Object` that provide an API to work with that particular part of
@@ -185,7 +190,6 @@ class Object(object):
     by building an empty wrapper and settings it `_dict` to the
     sub-structure.
     """
-    __metaclass__ = MetaObject
 
     def __new__(cls, *args, **kwargs):
         # `Object` does not have `__init__` but `__new__` to setup a
