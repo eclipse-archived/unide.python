@@ -207,7 +207,7 @@ class Object(object):
         return self
 
     def is_excess_field_ok(self, name):
-        """True, if this entities is allowed to have freely named keys."""
+        """True, if this entity is allowed to have freely named keys."""
         # pylint: disable=unused-argument, no-self-use
         return False
 
@@ -217,43 +217,50 @@ class Object(object):
         all validation problems will be added.
         """
         if errors is None:
-            errors = list()
+            errors = []
+
         cls = type(self)
-        existing_fields = set(self._data.keys())
-        props = [(p._name, p) for p in cls.__dict__.values()
-                 if isinstance(p, Property)]
+        existing_fields = set(self._data)
 
         content_spec = getattr(cls, "CONTENT_SPEC", None)
         if content_spec:
-            if self._data.get("content-spec", None) != content_spec:
+            if self._data.get("content-spec") != content_spec:
                 errors.append(
                     "'content-spec' for '%s' wrong or missing" % cls.__name__)
             existing_fields.remove("content-spec")
 
-        while props:
-            name, prop = props.pop()
+        for name, prop in self.get_properties().items():
             if name in existing_fields:
                 existing_fields.remove(name)
-                value = getattr(self, name, None)
+                value = self._data.get(name)
                 prop.check(self, value, errors)
+
         for excess_field in existing_fields:
             if not self.is_excess_field_ok(excess_field):
                 errors.append("'%s' is not a valid key for '%s' objects" %
                               (excess_field, cls.__name__))
+
         return errors
 
     @classmethod
     def load(cls, data):
-        """Create an object of type `cls` using the dict `data`, that has been
-        created by a JSON read.
+        """Create an object of type `cls` using the `data`, that has been
+        created by reading a JSON.
+
+        :type data: dict
+        :rtype: cls
+
         """
         self = make_object(cls, data)
-        props = dict((p._name, p) for k, p in list(cls.__dict__.items())
-                     if isinstance(p, Property))
-        for key, value in list(data.items()):
+
+        props = cls.get_properties()
+
+        for key, value in data.items():
             prop = props.get(key)
+
             if prop is not None:
                 setattr(self, key, prop.load(value))
+
         return self
 
     def __eq__(self, other):
@@ -269,9 +276,24 @@ class Object(object):
 
     __repr__ = __str__
 
+    @classmethod
+    def get_properties(cls):
+        """
+        Returns a dict {prop-name: prop object} of class attributes that are
+        `Property` instances.
+
+        The property name is read from the property object. This is normally the same
+        as the class attribute, but does not necessarily have to.
+
+        """
+        return {
+            attr._name: attr for attr in vars(cls).values()
+            if isinstance(attr, Property)
+        }
+
 
 def make_object(cls, data):
-    """Creates on API object of class `cls`, setting its `_data` to
+    """Creates an API object of class `cls`, setting its `_data` to
     data. Subclasses of `Object` are required to use this to build a
     new, empty instance without using their constructor.
     """
