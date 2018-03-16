@@ -43,6 +43,10 @@ __all__ = [
 
 
 def identity(x):
+    """
+    Identity function
+
+    """
     return x
 
 
@@ -86,14 +90,15 @@ class Property(object):
 
     def _is_not_one_of(self, fieldname, value, errors):
         if self._oneof is not None and value not in self._oneof:
-            errors.append("%r must be one of %s" %
-                          (value, ", ".join(str(x) for x in self._oneof)))
+            errors.append("%r must be one of %s for %s" %
+                          (value, ", ".join(str(x) for x in self._oneof), fieldname))
             return True
 
         return False
 
-    def _has_subproblems(self, fieldname, value, errors):
-        # pylint: disable=no-self-use
+    @staticmethod
+    def _has_subproblems(fieldname, value, errors):
+        # pylint: disable=unused-argument
         if hasattr(value, "problems"):
             value.problems(errors)
             return True

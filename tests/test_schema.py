@@ -12,8 +12,10 @@
 
 import datetime
 import dateutil.tz
-from unide.schema import Object, String, Float, Property, Datetime, StringMap
+
 from pytest import raises
+
+from unide.schema import Object, String, Float, Property, Datetime, StringMap
 
 
 def test_empty_object():
