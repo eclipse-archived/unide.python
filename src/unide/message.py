@@ -92,6 +92,9 @@ class Message(Object):
         self.title = title
         self.description = description
         self.hint = hint
+
+        # NOTE: while this looks kind of unnecessary, updating directly the metaData dict
+        # leads to an undesired empty JSON object when serialized.
         if metaData:
             self.metaData.update(metaData)
 
@@ -105,9 +108,13 @@ class MessagePayload(Object):
     device = InstanceOf(Device, null=False)
     messages = ListOf(Message)
 
-    def __init__(self, device):
+    def __init__(self, device, messages=None):
+        if messages is None:
+            messages = []
+
         self._data["content-spec"] = self.CONTENT_SPEC
         self.device = device
+        self.messages = messages
 
 
 def device_message(device,

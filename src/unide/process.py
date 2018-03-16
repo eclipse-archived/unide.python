@@ -44,6 +44,7 @@ class Part(Object):
         self.partID = partID
         self.result = result
         self.code = code
+
         if metaData:
             self.metaData.update(metaData)
 
@@ -110,6 +111,7 @@ class Process(Object):
         self.result = result
         self.shutoffPhase = shutoffPhase
         self.program = program
+
         if metaData:
             self.metaData.update(metaData)
 
@@ -155,6 +157,7 @@ class Series(HasDimensions):
 
     def add_sample(self, **data):
         """Add a sample to this series."""
+        # TODO [bgu 16-03-2018]: use different exception!
         assert all(k in self.dimensions for k in list(data.keys()))
         for dim in self.dimensions:
             getattr(self, dim).append(data.get(dim, None))

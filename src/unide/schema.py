@@ -175,6 +175,13 @@ class MetaObject(type):
             if isinstance(value, Property) and value._name is None:
                 value._name = key
 
+        # def __init__(self, *args, **kwargs):
+        #     self._data = OrderedDict()
+        #     for name, value in kwargs.items():
+        #         setattr(self, name, value)
+        #
+        #     kwattrs.get('__init__', dummy)(*args, **kwargs)
+
         super(MetaObject, cls).__init__(name, bases, kwattrs)
 
 
@@ -272,7 +279,7 @@ class Object(object):
     def __str__(self):
         return "%s(%s)" % (
             type(self).__name__,
-            ", ".join(["%s=%s" % (k, v) for k, v in list(self._data.items())]))
+            ", ".join(["%s=%s" % pair for pair in self._data.items()]))
 
     __repr__ = __str__
 
@@ -346,8 +353,10 @@ class HasDimensions(Object):
     def load(cls, data):
         self = make_object(cls, data)
         self.dimensions = set()
-        for key, value in list(data.items()):
+
+        for key, value in data.items():
             self.add_dimension(key, value)
+
         return self
 
 

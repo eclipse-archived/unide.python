@@ -74,4 +74,6 @@ class Device(Object):
     def __init__(self, deviceID, operationalStatus=None, **metaData):
         self.deviceID = deviceID
         self.operationalStatus = operationalStatus
-        self.metaData.update(metaData)
+
+        if metaData:
+            self.metaData.update(metaData)

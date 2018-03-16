@@ -181,6 +181,7 @@ class Measurement(Object):
     series = InstanceOf(Series, default=Series)
     limits = InstanceOf(Limits, default=Limits)
 
+    # FIXME [bgu 16-03-2018]:  should not limits go into the __init__ as well?
     def __init__(self, ts=None, result=None, code=None, dimensions=None):
         if dimensions is None:
             dimensions = []
@@ -235,6 +236,7 @@ class Part(Object):
         self.partID = partID
         self.result = result
         self.code = code
+
         if metaData:
             self.metaData.update(metaData)
 
@@ -247,7 +249,7 @@ class MeasurementPayload(Object):
     'series'.
     """
     CONTENT_SPEC = "urn:spec://eclipse.org/unide/measurement-message#v2"
-    device = InstanceOf(Device)
+    device = InstanceOf(Device, null=False)
     part = InstanceOf(Part)
     measurements = ListOf(Measurement)
 
