@@ -384,9 +384,9 @@ def Map(**kwargs):
     return Property(default=StringMap, **kwargs)
 
 
-def NumberMap(name, *args, **kwargs):
+def NumberMap(**kwargs):
     """A Property that is a String:Float map"""
-    return Property(name, default=Float, *args, **kwargs)
+    return Property(default=Float, **kwargs)
 
 
 def Datetime(null=True, **kwargs):
