@@ -149,9 +149,15 @@ class Series(HasDimensions):
     def add_sample(self, offset, **data):
         """Add a sample to this series."""
         self.offsets.append(offset)
-        assert all(k in self.dimensions for k in list(data.keys()))
+
+        missing_dimensions = set(data).difference(self.dimensions)
+
+        if missing_dimensions:
+            raise KeyError('Dimensions not defined in this series: %s'
+                           % ', '.join(missing_dimensions))
+
         for dim in self.dimensions:
-            getattr(self, dim).append(data.get(dim, None))
+            getattr(self, dim).append(data.get(dim))
 
     @classmethod
     def load(cls, data):
@@ -181,7 +187,7 @@ class Measurement(Object):
     series = InstanceOf(Series, default=Series)
     limits = InstanceOf(Limits, default=Limits)
 
-    # FIXME [bgu 16-03-2018]:  should not limits go into the __init__ as well?
+    # NOTE [bgu 16-03-2018]:  should not limits go into the __init__ as well?
     def __init__(self, ts=None, result=None, code=None, dimensions=None):
         if dimensions is None:
             dimensions = []

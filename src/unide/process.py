@@ -157,10 +157,14 @@ class Series(HasDimensions):
 
     def add_sample(self, **data):
         """Add a sample to this series."""
-        # TODO [bgu 16-03-2018]: use different exception!
-        assert all(k in self.dimensions for k in list(data.keys()))
+        missing_dimensions = set(data).difference(self.dimensions)
+
+        if missing_dimensions:
+            raise KeyError('Dimensions not defined in this series: %s'
+                           % ', '.join(missing_dimensions))
+
         for dim in self.dimensions:
-            getattr(self, dim).append(data.get(dim, None))
+            getattr(self, dim).append(data.get(dim))
 
 
 class Limit(Object):

@@ -176,6 +176,9 @@ def test_series():
     s.add_dimension("torque")
     s.torque = [1, 2, 4]
 
+    with raises(KeyError):
+        s.add_sample(5, love=42)
+
 
 def test_convenience_api():
     d = Device("12345", maker="Bosch")

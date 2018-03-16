@@ -9,10 +9,11 @@
 
 from datetime import datetime
 import dateutil.tz
+from pytest import raises
 
 from unide.util import dumps
 from unide.process import (ProcessPayload, Part, Process, Program,
-                           Measurement, SpecialValue)
+                           Measurement, SpecialValue, Series)
 from unide.common import Device
 
 import schemata
@@ -120,3 +121,13 @@ def test_build_sample():
     assert len(errors) == 2
 
     dumps(payload, indent=4)
+
+
+def test_series():
+    s = Series("pressure", "temperature")
+    s.add_sample(pressure=1.0, temperature=36.7)
+    s.add_dimension("torque")
+    s.torque = [1, 2, 4]
+
+    with raises(KeyError):
+        s.add_sample(love=42)
