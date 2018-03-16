@@ -311,6 +311,9 @@ class ProcessPayload(Object):
     measurements = ListOf(Measurement)
 
     def __init__(self, device, process, part=None, measurements=None):
+        if measurements is None:
+            measurements = []
+
         self._data["content-spec"] = self.CONTENT_SPEC
         self.device = device
         self.process = process

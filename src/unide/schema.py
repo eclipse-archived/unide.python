@@ -42,6 +42,10 @@ __all__ = [
 ]
 
 
+def identity(x):
+    return x
+
+
 class Property(object):
     """A PPMP property, described by name, type, max. length etc."""
 
@@ -53,8 +57,8 @@ class Property(object):
                  length=None,
                  default=lambda: None,
                  null=True,
-                 convert=None,
-                 load=None):
+                 convert=identity,
+                 load=identity):
         # pylint: disable=too-many-arguments
         self._name = name
         self._default = default
@@ -65,16 +69,7 @@ class Property(object):
         self._convert = convert
         self._load = load
 
-    # pylint: disable=unused-argument
-    def _check_null(self, fieldname, obj, value, errors):
-        if value is None:
-            if not self._null:
-                errors.append("%s may not be 'null'" % fieldname)
-            return True
-
-        return False
-
-    def _check_type(self, fieldname, obj, value, errors):
+    def _has_wrong_type(self, fieldname, value, errors):
         if self._types and not isinstance(value, self._types):
             errors.append("%r is not an appropriate value "
                           "for %s (wrong type)" % (value, fieldname))
@@ -82,25 +77,22 @@ class Property(object):
 
         return False
 
-    def _check_length(self, fieldname, obj, value, errors):
-        if self._length is not None:
-            if len(value) > self._length:
-                errors.append("%s may not be longer than %s" % (fieldname,
-                                                                self._length))
+    def _has_wrong_length(self, fieldname, value, errors):
+        if self._length is not None and len(value) > self._length:
+            errors.append("%s may not be longer than %s" % (fieldname, self._length))
             return True
 
         return False
 
-    def _check_one_of(self, fieldname, obj, value, errors):
-        if self._oneof:
-            if value not in self._oneof:
-                errors.append("%r must be one of %s" %
-                              (value, ", ".join(str(x) for x in self._oneof)))
+    def _is_not_one_of(self, fieldname, value, errors):
+        if self._oneof is not None and value not in self._oneof:
+            errors.append("%r must be one of %s" %
+                          (value, ", ".join(str(x) for x in self._oneof)))
             return True
 
         return False
 
-    def _check_problems(self, fieldname, obj, value, errors):
+    def _has_subproblems(self, fieldname, value, errors):
         # pylint: disable=no-self-use
         if hasattr(value, "problems"):
             value.problems(errors)
@@ -109,41 +101,48 @@ class Property(object):
         return False
 
     def check(self, obj, value, errors):
-        """Check if `value` is valid this property in the entity `obj`. Append
+        """
+        Check if `value` is valid this property in the entity `obj`. Append
         validation results to `errors` (list).
+
         """
         fieldname = "%s.%s" % (type(obj).__name__, self._name)
-        for checker in (self._check_null, self._check_type, self._check_length,
-                        self._check_one_of, self._check_problems):
-            if checker(fieldname, obj, value, errors):
+
+        if value is None:
+            if not self._null:
+                errors.append("%s may not be 'null'" % fieldname)
+
+            # If None, just leave. The rest of checks don't make any sense.
+            return
+
+        for has_error in [self._has_wrong_type, self._has_wrong_length,
+                          self._is_not_one_of, self._has_subproblems]:
+            if has_error(fieldname, value, errors):
                 break
-        return len(errors) == 0
 
     def load(self, value):
         """Load a property value from its JSON representation."""
-        if self._load:
-            value = self._load(value)
-        return value
+        return self._load(value)
 
     def convert(self, value):
         """Convert a value from Python to an internal representation that is
         conformant.
         """
-        if self._convert is not None:
-            value = self._convert(value)
-        return value
+        return self._convert(value)
 
     def __get__(self, obj, cls=None):
         return obj._data.setdefault(self._name, self._default())
 
     def __set__(self, obj, value):
         errors = []
+
         if value is None:
             # We don't want non-existing properties to appear as
             # 'null' in the JSON output, thus we'll remove the key
             # here, but we'll still have to check for null.
             self.check(obj, value, errors)
             self.__delete__(obj)
+
         else:
             value = self.convert(value)
             self.check(obj, value, errors)
