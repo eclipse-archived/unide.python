@@ -282,8 +282,8 @@ class Object(object):
         Returns a dict {prop-name: prop object} of class attributes that are
         `Property` instances.
 
-        The property name is read from the property object. This is normally the same
-        as the class attribute, but does not necessarily have to.
+        The property name is read from the property object. This is normally
+        the same as the class attribute, but does not necessarily have to.
 
         """
         return {
