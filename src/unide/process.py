@@ -118,7 +118,7 @@ class SpecialValue(Object):
     """One of the `SpecialValues`."""
     time = Float()
     name = String()
-    value = NumberMap('value')
+    value = NumberMap()
 
 
 class Series(HasDimensions):
