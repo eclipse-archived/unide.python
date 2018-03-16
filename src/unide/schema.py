@@ -51,7 +51,7 @@ class Property(object):
                  types=None,
                  oneof=None,
                  length=None,
-                 default=None,
+                 default=lambda: None,
                  null=True,
                  convert=None,
                  load=None):
@@ -134,10 +134,7 @@ class Property(object):
         return value
 
     def __get__(self, obj, cls=None):
-        if self._default:
-            return obj._data.setdefault(self._name, self._default())
-
-        return obj._data.get(self._name, None)
+        return obj._data.setdefault(self._name, self._default())
 
     def __set__(self, obj, value):
         errors = []
@@ -175,13 +172,6 @@ class MetaObject(type):
             if isinstance(value, Property) and value._name is None:
                 value._name = key
 
-        # def __init__(self, *args, **kwargs):
-        #     self._data = OrderedDict()
-        #     for name, value in kwargs.items():
-        #         setattr(self, name, value)
-        #
-        #     kwattrs.get('__init__', dummy)(*args, **kwargs)
-
         super(MetaObject, cls).__init__(name, bases, kwattrs)
 
 
@@ -196,8 +186,8 @@ class Object(object):
     specializations of `load` replace sub-structures with API wrappers
     by building an empty wrapper and settings it `_dict` to the
     sub-structure.
-    """
 
+    """
     def __new__(cls, *args, **kwargs):
         # `Object` does not have `__init__` but `__new__` to setup a
         # new API object. This removes the need for specializations to
