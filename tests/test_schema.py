@@ -77,7 +77,7 @@ def test_load():
         "f_string": "xyz",
         "f_float": 0.123,
         "f_datetime": "2002-05-30T09:30:10.123",
-        })
+    })
     assert obj.f_string == "xyz"
     assert obj.f_float == 0.123
     assert obj.f_datetime == datetime.datetime(2002, 5, 30, 9, 30, 10, 123000,

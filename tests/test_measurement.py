@@ -75,8 +75,8 @@ def test_measurement(n=10):
     m.series.add_dimension("temperature")
     for i in range(n):
         m.add_sample(local_now(),
-                     temperature=36.71+i,
-                     pressure=4.1+i)
+                     temperature=36.71 + i,
+                     pressure=4.1 + i)
         time.sleep(0.01)
     return m
 

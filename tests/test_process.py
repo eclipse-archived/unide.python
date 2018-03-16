@@ -34,7 +34,7 @@ def test_build_sample():
                 code="HUH289",
                 toolId="32324-432143")
     tz_plus2 = dateutil.tz.tzoffset("+02:00", 2 * 60 * 60)
-    ts = datetime(2002, 5, 30, 9, 30, 10, 123*1000, tz_plus2)
+    ts = datetime(2002, 5, 30, 9, 30, 10, 123 * 1000, tz_plus2)
     process = Process(externalProcessId="b4927dad-58d4-4580-b460-79cefd56775b",
                       ts=ts,
                       result="NOK",
