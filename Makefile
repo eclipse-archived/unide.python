@@ -55,7 +55,7 @@ ci: tests
 
 dist: $(VENV)
 	$(PYROMA) .
-	$(PYTHON) setup.py -q bdist_wheel --universal
+	$(PYTHON) setup.py -q bdist_wheel
 
 publish:
 	$(TWINE) upload dist/*
