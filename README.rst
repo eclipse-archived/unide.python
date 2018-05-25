@@ -74,25 +74,7 @@ To install the package from source::
 Contributing
 ============
 
-This is a straightforward Python project, using `setuptools` and the
-standard ``setup.py`` mechanism. You can run the test suite using
-``setup.py``::
-
-  python setup.py test
-
-There also is a top-level ``Makefile`` that builds a development
-environment and can run a couple of developer tasks. We aim for 100%
-test coverage and use `tox <https://pypi.python.org/pypi/tox>`_ to
-test against all supported Python releases. To run all tests against
-all supported Python versions, build the documentation locally and an
-installable wheel, you'll require `pyenv
-<https://github.com/pyenv/pyenv>`_ and a decent implementation of
-make. ``make all`` will create a virtualenv ``env`` in the project
-directory and install the necessary tools (see ``tools.txt``).
-
-For bug reports, suggestions and questions, simply open an issue in
-the Github issue tracker. We welcome pull requests.
-
+Please refer to `<CONTRIBUTING.rst>`_
 
 Documentation
 =============
